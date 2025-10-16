@@ -31,10 +31,10 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="bg-gradient-to-br from-cream to-pale-yellow">
+    <footer className="bg-gradient-to-br from-cream to-cream">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Main Footer Content */}
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
+        <div className="py-2 sm:py-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-2">
             <motion.div
@@ -43,31 +43,31 @@ const Footer = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="flex items-center space-x-2 mb-6">
-                <div className="bg-mint rounded-full p-2">
-                  <Recycle className="w-6 h-6 text-soft-gray" />
+              <div className="flex items-center space-x-2 mb-4 sm:mb-6">
+                <div className="bg-sage rounded-full p-2">
+                  <Recycle className="w-5 h-5 sm:w-6 sm:h-6 text-soft-graphite" />
                 </div>
-                <span className="text-xl font-poppins font-semibold text-soft-gray">
+                <span className="text-lg sm:text-xl font-playfair font-semibold text-soft-graphite">
                   ReUse Market
                 </span>
               </div>
               
-              <p className="text-soft-gray/70 mb-6 leading-relaxed max-w-md">
+              <p className="text-soft-graphite/70 mb-4 sm:mb-6 leading-relaxed max-w-md text-sm sm:text-base">
                 Conectando pessoas através da economia circular. 
                 Juntos, criamos um futuro mais sustentável, um objeto reutilizado por vez.
               </p>
 
-              <div className="space-y-3 text-soft-gray/70">
+              <div className="space-y-2 sm:space-y-3 text-soft-graphite/70 text-sm sm:text-base">
                 <div className="flex items-center space-x-3">
-                  <Mail className="w-5 h-5 text-mint" />
+                  <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-sage" />
                   <span>contato@reusemarket.com.br</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <Phone className="w-5 h-5 text-mint" />
+                  <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-sage" />
                   <span>(11) 99999-9999</span>
                 </div>
                 <div className="flex items-center space-x-3">
-                  <MapPin className="w-5 h-5 text-mint" />
+                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-sage" />
                   <span>São Paulo, Brasil</span>
                 </div>
               </div>
@@ -83,15 +83,15 @@ const Footer = () => {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               viewport={{ once: true }}
             >
-              <h3 className="font-poppins font-semibold text-soft-gray mb-6">
+              <h3 className="font-playfair font-semibold text-soft-graphite mb-4 sm:mb-6 text-base sm:text-lg">
                 {title}
               </h3>
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {links.map((link) => (
                   <li key={link.name}>
                     <a
                       href={link.href}
-                      className="text-soft-gray/70 hover:text-mint transition-colors duration-300"
+                      className="text-soft-graphite/70 hover:text-sage transition-colors duration-300 text-sm sm:text-base"
                     >
                       {link.name}
                     </a>
@@ -108,14 +108,14 @@ const Footer = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="py-8 border-t border-soft-gray/20"
+          className="py-6 sm:py-8 border-t border-soft-graphite/20"
         >
-          <div className="grid md:grid-cols-2 gap-8 items-center">
+          <div className="grid sm:grid-cols-2 gap-6 sm:gap-8 items-center">
             <div>
-              <h3 className="font-poppins font-semibold text-soft-gray mb-2">
+              <h3 className="font-playfair font-semibold text-soft-graphite mb-2 text-base sm:text-lg">
                 Fique por dentro das novidades
               </h3>
-              <p className="text-soft-gray/70">
+              <p className="text-soft-graphite/70 text-sm sm:text-base">
                 Receba dicas de sustentabilidade e as melhores ofertas
               </p>
             </div>
@@ -123,9 +123,9 @@ const Footer = () => {
               <input
                 type="email"
                 placeholder="Seu melhor e-mail"
-                className="flex-1 px-4 py-3 rounded-full border border-soft-gray/20 focus:outline-none focus:ring-2 focus:ring-mint focus:border-transparent"
+                className="flex-1 px-4 py-2 sm:py-3 rounded-full border border-soft-graphite/20 focus:outline-none focus:ring-2 focus:ring-sage focus:border-transparent text-sm sm:text-base"
               />
-              <button className="bg-mint text-soft-gray px-6 py-3 rounded-full font-semibold hover:bg-mint/80 transition-colors whitespace-nowrap">
+              <button className="bg-sage text-soft-graphite px-4 sm:px-6 py-2 sm:py-3 rounded-full font-semibold hover:bg-sage/80 transition-colors whitespace-nowrap text-sm sm:text-base">
                 Inscrever-se
               </button>
             </div>
@@ -133,14 +133,14 @@ const Footer = () => {
         </motion.div>
 
         {/* Bottom Section */}
-        <div className="py-8 border-t border-soft-gray/20">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+        <div className="py-6 sm:py-8 border-t border-soft-graphite/20">
+          <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <motion.div
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              className="text-soft-gray/60 text-center md:text-left"
+              className="text-soft-graphite/60 text-center sm:text-left text-xs sm:text-sm"
             >
               © 2025 Powered by Blockchaintech Brazil — Fazendo a economia circular girar 💚
             </motion.div>
@@ -157,9 +157,9 @@ const Footer = () => {
                   key={name}
                   href={href}
                   whileHover={{ scale: 1.1, y: -2 }}
-                  className="bg-white p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:bg-sage group"
+                  className="bg-white p-2 sm:p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:bg-sage group"
                 >
-                  <Icon className="w-5 h-5 text-soft-gray group-hover:text-white transition-colors" />
+                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-soft-graphite group-hover:text-white transition-colors" />
                 </motion.a>
               ))}
             </motion.div>

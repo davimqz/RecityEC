@@ -42,24 +42,24 @@ const Categories = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-pale-yellow to-cream">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-2 sm:py-16 bg-gradient-to-br from-sage/10 to-terracotta/5">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-2 sm:mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-poppins font-semibold text-soft-gray mb-4">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-playfair font-semibold text-soft-graphite mb-3 sm:mb-4 px-4">
             Categorias Populares
           </h2>
-          <p className="text-lg text-soft-gray/70 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-soft-graphite/70 max-w-2xl mx-auto px-4">
             Encontre exatamente o que você procura nas nossas categorias mais procuradas
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-6">
           {categories.map((category, index) => (
             <motion.div
               key={index}
@@ -71,21 +71,21 @@ const Categories = () => {
                 scale: 1.05,
                 y: -5
               }}
-              className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center cursor-pointer"
+              className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 text-center cursor-pointer"
             >
-              <div className={`w-16 h-16 ${category.color} rounded-full flex items-center justify-center mx-auto mb-4`}>
-                <category.icon className={`w-8 h-8 ${category.iconColor}`} />
+              <div className={`w-12 h-12 sm:w-16 sm:h-16 ${category.color} rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4`}>
+                <category.icon className={`w-6 h-6 sm:w-8 sm:h-8 ${category.iconColor}`} />
               </div>
               
-              <h3 className="text-lg font-poppins font-semibold text-soft-gray mb-2">
+              <h3 className="text-sm sm:text-lg font-raleway font-semibold text-soft-graphite mb-1 sm:mb-2">
                 {category.title}
               </h3>
               
-              <p className="text-sm text-soft-gray/60 mb-4">
+              <p className="text-xs sm:text-sm text-soft-graphite/60 mb-3 sm:mb-4 hidden sm:block">
                 {category.description}
               </p>
               
-              <button className="text-mint font-semibold text-sm hover:text-mint/80 transition-colors">
+              <button className="text-sage font-semibold text-xs sm:text-sm hover:text-sage/80 transition-colors">
                 Explorar →
               </button>
             </motion.div>
