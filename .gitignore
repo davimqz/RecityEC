@@ -30,3 +30,5 @@ dist-ssr
 .env.test.local
 .env.production.local
 contracts/.env
+railway-env-vars.txt
+*env-vars.txt
