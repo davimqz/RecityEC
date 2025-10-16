@@ -157,7 +157,7 @@ const Footer = () => {
                   key={name}
                   href={href}
                   whileHover={{ scale: 1.1, y: -2 }}
-                  className="bg-white p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:bg-mint group"
+                  className="bg-white p-3 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:bg-sage group"
                 >
                   <Icon className="w-5 h-5 text-soft-gray group-hover:text-white transition-colors" />
                 </motion.a>

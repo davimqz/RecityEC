@@ -111,14 +111,14 @@ const Testimonials = () => {
           {/* Navigation Buttons */}
           <button
             onClick={prevTestimonial}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-mint hover:text-white"
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-sage hover:text-white"
           >
             <ChevronLeft className="w-6 h-6" />
           </button>
           
           <button
             onClick={nextTestimonial}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-mint hover:text-white"
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 bg-white p-3 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-sage hover:text-white"
           >
             <ChevronRight className="w-6 h-6" />
           </button>

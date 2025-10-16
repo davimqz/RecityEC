@@ -56,7 +56,7 @@ const Benefits = () => {
                 whileHover={{ scale: 1.1, rotate: 5 }}
                 className={`w-20 h-20 ${benefit.color} rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg group-hover:shadow-xl transition-all duration-300`}
               >
-                <benefit.icon className="w-10 h-10 text-white" />
+                <benefit.icon className="w-10 h-10 text-black" />
               </motion.div>
               
               <h3 className="text-xl font-poppins font-semibold text-soft-gray mb-4">

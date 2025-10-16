@@ -99,7 +99,7 @@ const Categories = () => {
           viewport={{ once: true }}
           className="text-center mt-12"
         >
-          <button className="border-2 border-mint text-mint px-8 py-3 rounded-full font-semibold hover:bg-mint hover:text-white transition-all duration-300">
+          <button className="border-2 border-sage text-sage px-8 py-3 rounded-full font-semibold hover:bg-sage hover:text-white transition-all duration-300">
             Ver Todas as Categorias
           </button>
         </motion.div>

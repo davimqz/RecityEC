@@ -4,48 +4,70 @@ import { motion } from 'framer-motion';
 
 const Hero = () => {
   return (
-    <section id="inicio" className="pt-20 pb-16 bg-gradient-to-br from-cream to-pale-yellow min-h-screen flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section id="inicio" className="relative pt-20 pb-16 bg-gradient-to-br from-cream via-terracotta/10 to-sage/20 min-h-screen flex items-center overflow-hidden">
+      {/* Textura de fundo orgânica */}
+      <div className="absolute inset-0 opacity-30"></div>
+      
+      {/* Elementos flutuantes decorativos */}
+      <div className="absolute top-20 left-10 w-16 h-16 bg-sage/20 rounded-full animate-float"></div>
+      <div className="absolute top-40 right-20 w-8 h-8 bg-terracotta/30 rounded-full animate-gentle-bounce" style={{animationDelay: '1s'}}></div>
+      <div className="absolute bottom-20 left-1/4 w-12 h-12 bg-blue-gray/25 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
+      
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Left Content */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center lg:text-left"
+            className="text-center lg:text-left relative"
           >
-            <h1 className="text-4xl md:text-6xl font-poppins font-semibold text-soft-gray leading-tight mb-6">
-              Dê um novo{' '}
-              <span className="text-mint">destino</span>{' '}
-              ao que você não usa mais.
+            {/* Pequeno elemento decorativo */}
+            <div className="absolute -top-8 left-0 w-20 h-1 bg-gradient-to-r from-sage to-terracotta rounded-full"></div>
+            
+            <h1 className="text-4xl md:text-6xl font-playfair font-medium text-soft-graphite leading-tight mb-6">
+              Cada objeto tem uma{' '}
+              <span className="text-sage relative">
+                nova história
+                <svg className="absolute -bottom-2 left-0 w-full h-3" viewBox="0 0 200 10" fill="none">
+                  <path d="M2 8c30-6 60-6 90 0s60 6 90 0" stroke="#B7C9A9" strokeWidth="3" strokeLinecap="round"/>
+                </svg>
+              </span>{' '}
+              pra contar.
             </h1>
             
-            <p className="text-lg md:text-xl text-soft-gray/80 mb-8 leading-relaxed">
-              Compre, venda ou doe objetos e ajude a construir um futuro mais sustentável.
+            <p className="text-lg md:text-xl text-soft-graphite/70 mb-8 leading-relaxed font-inter">
+              Compre, venda e troque de forma consciente.<br/>
+              <span className="text-sage font-medium">Juntos, fazemos a economia circular girar.</span>
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, rotate: 1 }}
                 whileTap={{ scale: 0.95 }}
-                className="bg-mint text-soft-gray px-8 py-4 rounded-full font-semibold text-lg hover:bg-mint/80 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg"
+                className="bg-gradient-to-r from-sage to-sage/80 text-black px-8 py-4 rounded-full font-raleway font-semibold text-lg hover:from-sage/90 hover:to-sage transition-all duration-300 flex items-center justify-center gap-2 shadow-lg hover:shadow-xl relative overflow-hidden"
               >
-                Começar Agora
-                <ArrowRight className="w-5 h-5" />
+                <span className="relative z-10">Começar Agora</span>
+                <ArrowRight className="w-5 h-5 relative z-10" />
+                {/* Efeito de brilho */}
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700"></div>
               </motion.button>
               
               <motion.button
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, rotate: -1 }}
                 whileTap={{ scale: 0.95 }}
-                className="border-2 border-soft-gray text-soft-gray px-8 py-4 rounded-full font-semibold text-lg hover:bg-soft-gray hover:text-white transition-all duration-300 flex items-center justify-center gap-2"
+                className="border-2 border-soft-graphite/30 text-soft-graphite px-8 py-4 rounded-full font-raleway font-semibold text-lg hover:bg-soft-graphite hover:text-white transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm bg-white/50"
               >
                 <PlayCircle className="w-5 h-5" />
                 Saiba Mais
               </motion.button>
             </div>
+
+            {/* Micro elementos decorativos */}
+            <div className="absolute -right-8 top-1/2 w-4 h-4 bg-terracotta/40 transform rotate-45 animate-gentle-bounce" style={{animationDelay: '0.5s'}}></div>
           </motion.div>
 
-          {/* Right Content - Decorative Elements */}
+          {/* Right Content - Ilustração Orgânica */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
@@ -53,49 +75,72 @@ const Hero = () => {
             className="relative hidden lg:block"
           >
             <div className="relative">
-              {/* Floating Icons */}
-              <motion.div
-                animate={{ y: [0, -20, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="absolute top-10 left-10 bg-white p-4 rounded-2xl shadow-lg"
-              >
-                <Recycle className="w-8 h-8 text-mint" />
-              </motion.div>
-              
-              <motion.div
-                animate={{ y: [0, -15, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                className="absolute top-32 right-20 bg-white p-4 rounded-2xl shadow-lg"
-              >
-                <Heart className="w-8 h-8 text-pink-400" />
-              </motion.div>
-              
-              <motion.div
-                animate={{ y: [0, -25, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-                className="absolute bottom-20 left-20 bg-white p-4 rounded-2xl shadow-lg"
-              >
-                <Leaf className="w-8 h-8 text-green-500" />
-              </motion.div>
-              
-              <motion.div
-                animate={{ y: [0, -18, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1.5 }}
-                className="absolute bottom-32 right-10 bg-white p-4 rounded-2xl shadow-lg"
-              >
-                <Package className="w-8 h-8 text-gray-blue" />
-              </motion.div>
-
-              {/* Central Circle */}
-              <div className="w-80 h-80 mx-auto bg-gradient-to-br from-mint/30 to-gray-blue/30 rounded-full flex items-center justify-center">
-                <div className="w-60 h-60 bg-white rounded-full flex items-center justify-center shadow-xl">
-                  <div className="text-center">
-                    <Recycle className="w-16 h-16 text-mint mx-auto mb-4" />
-                    <p className="text-soft-gray font-semibold text-lg">Economia Circular</p>
-                    <p className="text-soft-gray/60 text-sm">em movimento</p>
-                  </div>
-                </div>
+              {/* Blob orgânico principal */}
+              <div className="absolute inset-0 flex items-center justify-center">
+                <svg width="400" height="400" viewBox="0 0 400 400" className="animate-organic-pulse">
+                  <path d="M200 50 C300 80, 350 150, 320 220 C300 280, 240 320, 180 300 C120 280, 80 220, 100 160 C120 100, 160 60, 200 50 Z" 
+                        fill="url(#heroGradient)" opacity="0.3"/>
+                  <defs>
+                    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#B7C9A9"/>
+                      <stop offset="50%" stopColor="#E7BFA7"/>
+                      <stop offset="100%" stopColor="#A9C9D3"/>
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
+              
+              {/* Ícones flutuantes com design mais orgânico */}
+              <motion.div
+                animate={{ y: [0, -15, 0], rotate: [0, 5, 0] }}
+                transition={{ duration: 4, repeat: Infinity }}
+                className="absolute top-16 left-16 bg-gradient-to-br from-white to-cream/80 p-5 rounded-3xl shadow-xl border border-sage/20 backdrop-blur-sm"
+                style={{ transform: 'rotate(5deg)' }}
+              >
+                <Recycle className="w-10 h-10 text-sage" />
+              </motion.div>
+              
+              <motion.div
+                animate={{ y: [0, -12, 0], rotate: [0, -3, 0] }}
+                transition={{ duration: 3.5, repeat: Infinity, delay: 0.7 }}
+                className="absolute top-36 right-12 bg-gradient-to-br from-terracotta/20 to-white p-4 rounded-2xl shadow-lg border border-terracotta/30"
+                style={{ transform: 'rotate(-8deg)' }}
+              >
+                <Heart className="w-8 h-8 text-terracotta" />
+              </motion.div>
+              
+              <motion.div
+                animate={{ y: [0, -18, 0], rotate: [0, 4, 0] }}
+                transition={{ duration: 4.2, repeat: Infinity, delay: 1.2 }}
+                className="absolute bottom-24 left-12 bg-gradient-to-br from-sage/20 to-white p-4 rounded-xl shadow-lg border border-sage/40"
+                style={{ transform: 'rotate(12deg)' }}
+              >
+                <Leaf className="w-9 h-9 text-sage" />
+              </motion.div>
+              
+              <motion.div
+                animate={{ y: [0, -14, 0], rotate: [0, -6, 0] }}
+                transition={{ duration: 3.8, repeat: Infinity, delay: 1.8 }}
+                className="absolute bottom-40 right-20 bg-gradient-to-br from-blue-gray/20 to-white p-4 rounded-2xl shadow-lg border border-blue-gray/30"
+                style={{ transform: 'rotate(-5deg)' }}
+              >
+                <Package className="w-8 h-8 text-blue-gray" />
+              </motion.div>
+              
+              {/* Elementos conectores - setas curvas */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 400 400">
+                <path d="M120 150 Q180 120 220 180" stroke="#B7C9A9" strokeWidth="2" fill="none" opacity="0.4" strokeDasharray="5,5">
+                  <animate attributeName="stroke-dashoffset" values="0;10" dur="2s" repeatCount="indefinite"/>
+                </path>
+                <path d="M280 120 Q250 200 180 250" stroke="#E7BFA7" strokeWidth="2" fill="none" opacity="0.4" strokeDasharray="3,7">
+                  <animate attributeName="stroke-dashoffset" values="0;10" dur="3s" repeatCount="indefinite"/>
+                </path>
+              </svg>
+              
+              {/* Pequenas partículas flutuantes */}
+              <div className="absolute top-1/4 left-1/3 w-2 h-2 bg-sage rounded-full animate-float opacity-60" style={{animationDelay: '2s'}}></div>
+              <div className="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-terracotta rounded-full animate-gentle-bounce opacity-50" style={{animationDelay: '3s'}}></div>
+              <div className="absolute bottom-1/3 left-1/2 w-1 h-1 bg-blue-gray rounded-full animate-organic-pulse opacity-70" style={{animationDelay: '1.5s'}}></div>
             </div>
           </motion.div>
         </div>
