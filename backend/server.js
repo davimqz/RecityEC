@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -89,7 +90,21 @@ app.use('/api/rewards', rewardsRoutes);
 app.use('/api/posts', postsRoutes);
 
 // Servir arquivos estáticos (uploads)
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+// Garantir que o diretório de uploads existe
+const uploadsDir = path.join(__dirname, 'uploads');
+const postsDir = path.join(uploadsDir, 'posts');
+
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+  console.log('📁 Diretório uploads criado');
+}
+
+if (!fs.existsSync(postsDir)) {
+  fs.mkdirSync(postsDir, { recursive: true });
+  console.log('📁 Diretório uploads/posts criado');
+}
+
+app.use('/uploads', express.static(uploadsDir, {
   setHeaders: (res, path, stat) => {
     res.set('Access-Control-Allow-Origin', '*');
     res.set('Cross-Origin-Resource-Policy', 'cross-origin');
@@ -103,6 +118,22 @@ app.get('/api/health', (req, res) => {
     timestamp: new Date().toISOString(),
     uptime: process.uptime()
   });
+});
+
+// Debug endpoint para listar arquivos
+app.get('/api/debug/uploads', (req, res) => {
+  try {
+    const uploadsPath = path.join(__dirname, 'uploads', 'posts');
+    const files = fs.existsSync(uploadsPath) ? fs.readdirSync(uploadsPath) : [];
+    res.json({
+      uploadsPath,
+      exists: fs.existsSync(uploadsPath),
+      files: files,
+      totalFiles: files.length
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Error handling middleware
