@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Heart, MessageCircle, Eye, User, Coins, MoreHorizontal, Award, Plus, Home, Shirt, MessageSquare } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config/api';
 
 const Feed = () => {
   const { user } = useContext(AuthContext);
@@ -18,7 +19,7 @@ const Feed = () => {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
 
-      const response = await fetch(`http://localhost:3001/api/posts?page=${pageNum}&limit=12`);
+      const response = await fetch(`${API_URL}/api/posts?page=${pageNum}&limit=12`);
       const data = await response.json();
 
       if (data.success) {
@@ -47,7 +48,7 @@ const Feed = () => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/posts/${postId}/like`, {
+      const response = await fetch(`${API_URL}/api/posts/${postId}/like`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -143,7 +144,7 @@ const Feed = () => {
               <div className="aspect-square relative overflow-hidden">
                 {post.images && post.images.length > 0 ? (
                   <img 
-                    src={`http://localhost:3001${post.images[0]?.url || post.images[0]}`}
+                    src={`${API_URL}${post.images[0]?.url || post.images[0]}`}
                     alt={post.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {

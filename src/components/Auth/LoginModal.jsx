@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { API_URL } from '../../config/api';
 
 const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -55,7 +56,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       }
 
       const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
-      const response = await fetch(`http://localhost:3001${endpoint}`, {
+      const response = await fetch(`${API_URL}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +92,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
 
   const handleGoogleLogin = () => {
     // Redirecionar para endpoint do Google OAuth
-    window.location.href = 'http://localhost:3001/api/auth/google';
+    window.location.href = `${API_URL}/api/auth/google`;
   };
 
   if (!isOpen) return null;

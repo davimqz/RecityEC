@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { User, Camera, Heart, MessageCircle, Eye, Plus, Grid, Award, Coins } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
+import { API_URL } from '../config/api';
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
@@ -23,7 +24,7 @@ const UserProfile = () => {
   const fetchUserPosts = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/posts/user/${user.id}`, {
+      const response = await fetch(`${API_URL}/api/posts/user/${user.id}`, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -204,7 +205,7 @@ const UserProfile = () => {
                   {/* Imagem do post */}
                   <div className="aspect-square bg-gray-100 relative overflow-hidden">
                     <img
-                      src={`http://localhost:3001${post.images[0]?.url}`}
+                      src={`${API_URL}${post.images[0]?.url}`}
                       alt={post.title}
                       className="w-full h-full object-cover"
                     />
@@ -276,7 +277,7 @@ const UserProfile = () => {
                 {selectedPost.images.map((image, index) => (
                   <img
                     key={index}
-                    src={`http://localhost:3001${image.url}`}
+                    src={`${API_URL}${image.url}`}
                     alt={`${selectedPost.title} ${index + 1}`}
                     className="w-full h-48 object-cover rounded-lg"
                   />

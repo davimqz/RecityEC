@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Upload, X, Plus, Coins, MapPin, Tag, Camera, ArrowLeft } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from '../config/api';
 
 const CreatePost = () => {
   const { user } = useContext(AuthContext);
@@ -149,7 +150,7 @@ const CreatePost = () => {
         formDataToSend.append('images', image);
       });
 
-      const response = await fetch('http://localhost:3001/api/posts', {
+      const response = await fetch(`${API_URL}/api/posts`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
