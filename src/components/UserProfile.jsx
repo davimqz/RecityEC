@@ -29,22 +29,36 @@ const UserProfile = () => {
         }
       });
 
-      const data = await response.json();
-      if (data.success) {
-        setUserPosts(data.posts);
+      const responseData = await response.json();
+      if (responseData.success && responseData.data) {
+        const posts = Array.isArray(responseData.data) ? responseData.data : [];
+        setUserPosts(posts);
         
-        // Calcular estatísticas
-        const totalLikes = data.posts.reduce((sum, post) => sum + post.likesCount, 0);
-        const totalViews = data.posts.reduce((sum, post) => sum + post.views, 0);
+        // Calcular estatísticas com valores padrão
+        const totalLikes = posts.reduce((sum, post) => sum + (post.likesCount || 0), 0);
+        const totalViews = posts.reduce((sum, post) => sum + (post.views || 0), 0);
         
         setStats({
-          totalPosts: data.posts.length,
+          totalPosts: posts.length,
           totalLikes,
           totalViews
+        });
+      } else {
+        setUserPosts([]);
+        setStats({
+          totalPosts: 0,
+          totalLikes: 0,
+          totalViews: 0
         });
       }
     } catch (error) {
       console.error('Erro ao carregar posts:', error);
+      setUserPosts([]);
+      setStats({
+        totalPosts: 0,
+        totalLikes: 0,
+        totalViews: 0
+      });
     } finally {
       setLoading(false);
     }
@@ -156,7 +170,7 @@ const UserProfile = () => {
             <h2 className="text-xl font-bold text-charcoal">Meus Posts</h2>
           </div>
 
-          {userPosts.length === 0 ? (
+          {!userPosts || userPosts.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -178,7 +192,7 @@ const UserProfile = () => {
             </motion.div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userPosts.map((post, index) => (
+              {(userPosts || []).map((post, index) => (
                 <motion.div
                   key={post._id}
                   initial={{ opacity: 0, y: 20 }}

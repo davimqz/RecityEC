@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Recycle, User, LogOut, Wallet, Plus, Grid, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import LoginModal from './Auth/LoginModal';
 import Logo from "../assets/img/giro_logo.png";
@@ -13,6 +13,7 @@ const Navbar = () => {
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const { user, isAuthenticated, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -215,12 +216,16 @@ const Navbar = () => {
         )}
         
         {/* Login Modal */}
-        <LoginModal 
+        <LoginModal
           isOpen={isLoginModalOpen}
           onClose={() => setIsLoginModalOpen(false)}
           onLogin={(userData) => {
-            // O contexto já gerencia o estado do usuário
+            // Fechar modal e menus
+            setIsLoginModalOpen(false);
             setIsUserMenuOpen(false);
+            setIsMobileMenuOpen(false);
+            // Redirecionar para feed após login
+            navigate('/feed');
           }}
         />
       </div>

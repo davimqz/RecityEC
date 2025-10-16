@@ -63,9 +63,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = (userData) => {
+  const login = (userData, redirectCallback) => {
     setUser(userData);
     setIsAuthenticated(true);
+    
+    // Executar callback de redirecionamento se fornecido
+    if (redirectCallback && typeof redirectCallback === 'function') {
+      redirectCallback();
+    }
   };
 
   const logout = () => {

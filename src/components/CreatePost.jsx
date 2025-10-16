@@ -2,9 +2,11 @@ import React, { useState, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { Upload, X, Plus, Coins, MapPin, Tag, Camera, ArrowLeft } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const CreatePost = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -158,7 +160,7 @@ const CreatePost = () => {
       const data = await response.json();
 
       if (data.success) {
-        setSuccess(`Post criado com sucesso! Você ganhou ${data.reward.tokens} tokens GIRO!`);
+        setSuccess('Item publicado com sucesso! Redirecionando para o feed...');
         
         // Reset form
         setFormData({
@@ -174,7 +176,7 @@ const CreatePost = () => {
 
         // Redirecionar após 2 segundos
         setTimeout(() => {
-          window.location.href = '/profile';
+          navigate('/feed');
         }, 2000);
       } else {
         setError(data.message || 'Erro ao criar post');
@@ -204,7 +206,7 @@ const CreatePost = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream py-8">
+    <div className="min-h-screen bg-gray-50 py-8 pb-20">
       <div className="max-w-2xl mx-auto px-4">
         {/* Header */}
         <motion.div
@@ -215,7 +217,7 @@ const CreatePost = () => {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => window.history.back()}
+            onClick={() => navigate('/feed')}
             className="p-3 bg-white rounded-xl shadow-md hover:shadow-lg transition-all"
           >
             <ArrowLeft size={20} className="text-charcoal" />
@@ -455,13 +457,13 @@ const CreatePost = () => {
             )}
 
             {/* Botões */}
-            <div className="flex gap-4 pt-4">
+            <div className="flex gap-4 pt-6 border-t border-gray-100">
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="button"
-                onClick={() => window.history.back()}
-                className="flex-1 px-6 py-3 border border-gray-200 text-charcoal rounded-xl hover:bg-gray-50 transition-colors"
+                onClick={() => navigate('/feed')}
+                className="flex-1 px-6 py-4 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
               >
                 Cancelar
               </motion.button>
@@ -470,9 +472,16 @@ const CreatePost = () => {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="flex-1 px-6 py-3 bg-sage text-white rounded-xl hover:bg-sage/80 transition-colors disabled:opacity-50 font-medium"
+                className="flex-1 px-6 py-4 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors disabled:opacity-50 font-medium shadow-lg"
               >
-                {loading ? 'Criando...' : 'Criar Post'}
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Criando...
+                  </div>
+                ) : (
+                  'Publicar Item'
+                )}
               </motion.button>
             </div>
           </form>

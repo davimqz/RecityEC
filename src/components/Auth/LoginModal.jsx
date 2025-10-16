@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const LoginModal = ({ isOpen, onClose, onLogin }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,6 +15,7 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const { login } = useAuth();
 
   // Reset form when modal opens/closes
   React.useEffect(() => {
@@ -71,7 +73,14 @@ const LoginModal = ({ isOpen, onClose, onLogin }) => {
       localStorage.setItem('token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       
-      onLogin(data.user);
+      // Atualizar contexto de autenticação
+      login(data.user);
+      
+      // Executar callback de login (redirecionamento)
+      if (onLogin) {
+        onLogin(data.user);
+      }
+      
       onClose();
     } catch (err) {
       setError(err.message);

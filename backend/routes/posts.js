@@ -200,8 +200,13 @@ router.post('/', authMiddleware, upload.array('images', 5), async (req, res) => 
       });
     }
     
-    // Processar URLs das imagens
-    const imageUrls = req.files.map(file => `/uploads/posts/${file.filename}`);
+    // Processar imagens com estrutura completa
+    const imagesArray = req.files.map(file => ({
+      url: `/uploads/posts/${file.filename}`,
+      filename: file.filename,
+      size: file.size,
+      uploadedAt: new Date()
+    }));
     
     // Processar tags (string para array)
     let tagsArray = [];
@@ -217,7 +222,7 @@ router.post('/', authMiddleware, upload.array('images', 5), async (req, res) => 
     const post = new Post({
       title: title.trim(),
       description: description.trim(),
-      images: imageUrls,
+      images: imagesArray,
       giroValue: giroVal,
       author: req.user.id,
       tags: tagsArray,

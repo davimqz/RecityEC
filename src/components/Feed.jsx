@@ -1,32 +1,33 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, MessageCircle, Eye, User, Coins, MoreHorizontal, Award } from 'lucide-react';
+import { Heart, MessageCircle, Eye, User, Coins, MoreHorizontal, Award, Plus, Home, Shirt, MessageSquare } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 const Feed = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [commentText, setCommentText] = useState({});
 
   const fetchPosts = useCallback(async (pageNum = 1, reset = false) => {
     try {
       if (pageNum === 1) setLoading(true);
       else setLoadingMore(true);
 
-      const response = await fetch(`http://localhost:3001/api/posts?page=${pageNum}&limit=10`);
+      const response = await fetch(`http://localhost:3001/api/posts?page=${pageNum}&limit=12`);
       const data = await response.json();
 
       if (data.success) {
         if (reset || pageNum === 1) {
-          setPosts(data.posts);
+          setPosts(data.data);
         } else {
-          setPosts(prev => [...prev, ...data.posts]);
+          setPosts(prev => [...prev, ...data.data]);
         }
-        setHasMore(data.pagination.hasMore);
+        setHasMore(data.pagination.hasNextPage);
         setPage(pageNum);
       }
     } catch (error) {
@@ -50,76 +51,28 @@ const Feed = () => {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
+          'Content-Type': 'application/json',
+        },
       });
 
-      const data = await response.json();
-      if (data.success) {
-        // Atualizar estado local
-        setPosts(prev => prev.map(post => 
-          post._id === postId 
-            ? { 
-                ...post, 
-                likesCount: data.likesCount,
-                isLiked: data.isLiked
-              }
-            : post
-        ));
-
-        // Mostrar notificação de recompensa
-        if (data.reward) {
-          showRewardNotification(data.reward.tokens, 'curtida');
-        }
+      if (response.ok) {
+        const data = await response.json();
+        setPosts(prev => prev.map(post => {
+          if (post._id === postId) {
+            const isLiked = post.likes.includes(user._id);
+            return {
+              ...post,
+              likes: isLiked 
+                ? post.likes.filter(id => id !== user._id)
+                : [...post.likes, user._id]
+            };
+          }
+          return post;
+        }));
       }
     } catch (error) {
       console.error('Erro ao curtir post:', error);
     }
-  };
-
-  const handleComment = async (postId) => {
-    if (!user || !commentText[postId]?.trim()) return;
-
-    try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/api/posts/${postId}/comment`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ text: commentText[postId].trim() })
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        // Atualizar estado local
-        setPosts(prev => prev.map(post => 
-          post._id === postId 
-            ? { 
-                ...post, 
-                comments: [...post.comments, data.comment],
-                commentsCount: data.commentsCount
-              }
-            : post
-        ));
-
-        // Limpar campo de comentário
-        setCommentText(prev => ({ ...prev, [postId]: '' }));
-
-        // Mostrar notificação de recompensa
-        if (data.reward) {
-          showRewardNotification(data.reward.tokens, 'comentário');
-        }
-      }
-    } catch (error) {
-      console.error('Erro ao comentar:', error);
-    }
-  };
-
-  const showRewardNotification = (tokens, action) => {
-    // Você pode implementar um toast/notification aqui
-    console.log(`🎉 +${tokens} GIRO por ${action}!`);
   };
 
   const loadMore = () => {
@@ -128,254 +81,131 @@ const Feed = () => {
     }
   };
 
-  const getTierColor = (tier) => {
-    const colors = {
-      bronze: 'text-orange-600',
-      silver: 'text-gray-600',
-      gold: 'text-yellow-600',
-      platinum: 'text-purple-600'
-    };
-    return colors[tier] || colors.bronze;
-  };
-
-  const getTierIcon = (tier) => {
-    if (tier === 'platinum') return '💎';
-    if (tier === 'gold') return '🏆';
-    if (tier === 'silver') return '🥈';
-    return '🥉';
-  };
-
   const formatDate = (date) => {
     return new Date(date).toLocaleDateString('pt-BR', {
       day: '2-digit',
       month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+      year: 'numeric'
     });
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-cream flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sage"></div>
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-20">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-cream py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        {/* Header do Feed */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
-        >
-          <h1 className="text-3xl font-bold text-charcoal mb-2">Feed GIRO</h1>
-          <p className="text-charcoal/60">Descubra itens incríveis da comunidade</p>
-        </motion.div>
+    <div className="min-h-screen bg-gray-50 pt-20 pb-24">
+      {/* Header com saldo GIRO */}
+      {user && (
+        <div className="fixed top-16 left-0 right-0 bg-white shadow-sm z-40 border-b">
+          <div className="max-w-6xl mx-auto px-4 py-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center">
+                    <User size={16} className="text-white" />
+                  </div>
+                  <span className="font-medium text-gray-800">{user.name}</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="bg-purple-500 text-white px-4 py-2 rounded-full font-medium">
+                  {user.giroBalance || 2500} TKN
+                </div>
+                <button 
+                  onClick={() => navigate('/create-post')}
+                  className="bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors"
+                >
+                  <Plus size={20} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
-        {/* Posts */}
-        <div className="space-y-6">
+      <div className="max-w-6xl mx-auto px-4" style={{ paddingTop: user ? '100px' : '20px' }}>
+        {/* Grid de Posts */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {posts.map((post, index) => (
             <motion.div
               key={post._id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className="bg-white rounded-2xl shadow-lg overflow-hidden"
+              className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-shadow"
             >
-              {/* Header do Post */}
-              <div className="p-4 border-b border-gray-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-sage/20 flex items-center justify-center overflow-hidden">
-                      {post.author.profilePicture ? (
-                        <img 
-                          src={post.author.profilePicture} 
-                          alt={post.author.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <User size={20} className="text-sage" />
-                      )}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-charcoal">{post.author.name}</h3>
-                        <span className={`text-xs ${getTierColor(post.author.discountTier)}`}>
-                          {getTierIcon(post.author.discountTier)}
-                        </span>
-                      </div>
-                      <p className="text-xs text-charcoal/60">{formatDate(post.createdAt)}</p>
-                    </div>
+              {/* Imagem do Item */}
+              <div className="aspect-square relative overflow-hidden">
+                {post.images && post.images.length > 0 ? (
+                  <img 
+                    src={`http://localhost:3001${post.images[0]?.url || post.images[0]}`}
+                    alt={post.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      console.log('Erro ao carregar imagem:', e.target.src);
+                      e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy="0.3em" fill="%23999">Erro</text></svg>';
+                    }}
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                    <span className="text-gray-400">Sem imagem</span>
                   </div>
-                  <button className="text-charcoal/40 hover:text-charcoal/60">
-                    <MoreHorizontal size={20} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Conteúdo do Post */}
-              <div className="p-4">
-                <h2 className="text-xl font-bold text-charcoal mb-2">{post.title}</h2>
-                <p className="text-charcoal/70 mb-3">{post.description}</p>
+                )}
                 
-                {/* Valor em GIRO */}
-                <div className="flex items-center gap-2 mb-4">
-                  <Coins size={20} className="text-sage" />
-                  <span className="text-2xl font-bold text-sage">{post.giroValue} GIRO</span>
+                {/* Badge do valor GIRO */}
+                <div className="absolute top-3 right-3 bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  {post.giroValue} TKN
                 </div>
-
-                {/* Imagens */}
-                <div className="grid grid-cols-1 gap-3 mb-4">
-                  {post.images.slice(0, 3).map((image, idx) => (
-                    <div key={idx} className="relative">
-                      <img
-                        src={`http://localhost:3001${image.url}`}
-                        alt={`${post.title} ${idx + 1}`}
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                      {idx === 2 && post.images.length > 3 && (
-                        <div className="absolute inset-0 bg-black/50 rounded-lg flex items-center justify-center">
-                          <span className="text-white text-xl font-bold">
-                            +{post.images.length - 3}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-
-                {/* Tags */}
-                {post.tags && post.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mb-4">
-                    {post.tags.map((tag, idx) => (
-                      <span key={idx} className="bg-sage/10 text-sage px-2 py-1 rounded-full text-xs">
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
               </div>
 
-              {/* Ações do Post */}
-              <div className="border-t border-gray-100">
-                {/* Estatísticas */}
-                <div className="px-4 py-2 flex items-center justify-between text-sm text-charcoal/60">
-                  <div className="flex items-center gap-4">
-                    <span>{post.likesCount} curtidas</span>
-                    <span>{post.commentsCount} comentários</span>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <Eye size={14} />
-                    <span>{post.views} visualizações</span>
-                  </div>
+              {/* Informações do Item */}
+              <div className="p-4">
+                <h3 className="font-semibold text-gray-800 mb-1 line-clamp-1">{post.title}</h3>
+                <p className="text-gray-600 text-sm mb-3 line-clamp-2">{post.description}</p>
+                
+                {/* Autor */}
+                <div className="flex items-center justify-between text-sm text-gray-500 mb-3">
+                  <span>{post.author?.name || 'Usuário'}</span>
+                  <span>{formatDate(post.createdAt)}</span>
                 </div>
 
-                {/* Botões de ação */}
-                {user && (
-                  <div className="px-4 py-3 border-t border-gray-100">
-                    <div className="flex items-center gap-4 mb-3">
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => handleLike(post._id)}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors ${
-                          post.isLiked 
-                            ? 'bg-red-50 text-red-600' 
-                            : 'bg-gray-50 text-charcoal hover:bg-gray-100'
-                        }`}
-                      >
-                        <Heart size={16} className={post.isLiked ? 'fill-current' : ''} />
-                        <span className="text-sm font-medium">Curtir</span>
-                      </motion.button>
+                {/* Botão de Ação */}
+                <button 
+                  className="w-full bg-emerald-500 text-white py-2 rounded-xl font-medium hover:bg-emerald-600 transition-colors"
+                  onClick={() => {
+                    console.log('Interesse no item:', post.title);
+                  }}
+                >
+                  Quero Trocar!
+                </button>
 
-                      <motion.button
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-50 text-charcoal hover:bg-gray-100 transition-colors"
-                      >
-                        <MessageCircle size={16} />
-                        <span className="text-sm font-medium">Comentar</span>
-                      </motion.button>
-                    </div>
-
-                    {/* Campo de comentário */}
-                    <div className="flex gap-3">
-                      <div className="w-8 h-8 rounded-full bg-sage/20 flex items-center justify-center overflow-hidden flex-shrink-0">
-                        {user.profilePicture ? (
-                          <img 
-                            src={user.profilePicture} 
-                            alt={user.name}
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <User size={16} className="text-sage" />
-                        )}
-                      </div>
-                      <div className="flex-1 flex gap-2">
-                        <input
-                          type="text"
-                          placeholder="Escreva um comentário..."
-                          value={commentText[post._id] || ''}
-                          onChange={(e) => setCommentText(prev => ({
-                            ...prev,
-                            [post._id]: e.target.value
-                          }))}
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                              handleComment(post._id);
-                            }
-                          }}
-                          className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-sage/20 focus:border-sage"
-                        />
-                        <motion.button
-                          whileHover={{ scale: 1.05 }}
-                          whileTap={{ scale: 0.95 }}
-                          onClick={() => handleComment(post._id)}
-                          disabled={!commentText[post._id]?.trim()}
-                          className="px-4 py-2 bg-sage text-white rounded-lg hover:bg-sage/80 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                          Enviar
-                        </motion.button>
-                      </div>
-                    </div>
+                {/* Stats */}
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
+                  <button
+                    onClick={() => handleLike(post._id)}
+                    className={`flex items-center gap-1 transition-colors ${
+                      post.likes.includes(user?._id) ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
+                    }`}
+                  >
+                    <Heart size={16} className={post.likes.includes(user?._id) ? 'fill-current' : ''} />
+                    <span className="text-sm">{post.likes?.length || 0}</span>
+                  </button>
+                  
+                  <div className="flex items-center gap-1 text-gray-400">
+                    <MessageCircle size={16} />
+                    <span className="text-sm">{post.comments?.length || 0}</span>
                   </div>
-                )}
-
-                {/* Comentários existentes */}
-                {post.comments && post.comments.length > 0 && (
-                  <div className="px-4 pb-4 border-t border-gray-100">
-                    <div className="space-y-3 mt-3">
-                      {post.comments.slice(-3).map((comment, idx) => (
-                        <div key={idx} className="flex gap-3">
-                          <div className="w-6 h-6 rounded-full bg-sage/20 flex items-center justify-center overflow-hidden flex-shrink-0">
-                            {comment.user.profilePicture ? (
-                              <img 
-                                src={comment.user.profilePicture} 
-                                alt={comment.user.name}
-                                className="w-full h-full object-cover"
-                              />
-                            ) : (
-                              <User size={12} className="text-sage" />
-                            )}
-                          </div>
-                          <div className="flex-1">
-                            <div className="bg-gray-50 rounded-lg px-3 py-2">
-                              <h4 className="font-medium text-charcoal text-sm">{comment.user.name}</h4>
-                              <p className="text-charcoal/70 text-sm">{comment.text}</p>
-                            </div>
-                            <p className="text-xs text-charcoal/40 mt-1">
-                              {formatDate(comment.createdAt)}
-                            </p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
+                  
+                  <div className="flex items-center gap-1 text-gray-400">
+                    <Eye size={16} />
+                    <span className="text-sm">{post.views || 0}</span>
                   </div>
-                )}
+                </div>
               </div>
             </motion.div>
           ))}
@@ -389,20 +219,74 @@ const Feed = () => {
               whileTap={{ scale: 0.95 }}
               onClick={loadMore}
               disabled={loadingMore}
-              className="bg-sage text-white px-8 py-3 rounded-xl font-medium hover:bg-sage/80 transition-colors disabled:opacity-50"
+              className="bg-emerald-500 text-white px-8 py-3 rounded-xl font-medium hover:bg-emerald-600 transition-colors disabled:opacity-50"
             >
-              {loadingMore ? 'Carregando...' : 'Carregar Mais Posts'}
+              {loadingMore ? 'Carregando...' : 'Carregar Mais Items'}
             </motion.button>
           </div>
         )}
 
         {/* Mensagem final */}
         {!hasMore && posts.length > 0 && (
-          <div className="text-center mt-8 text-charcoal/60">
-            <p>Você viu todos os posts disponíveis! 🎉</p>
+          <div className="text-center mt-8 text-gray-600">
+            <p>Você viu todos os itens disponíveis! 🎉</p>
+          </div>
+        )}
+
+        {/* Mensagem quando não há posts */}
+        {posts.length === 0 && !loading && (
+          <div className="text-center mt-12">
+            <div className="bg-white rounded-2xl p-8 shadow-sm">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Nenhum item encontrado</h3>
+              <p className="text-gray-600 mb-4">Seja o primeiro a compartilhar um item!</p>
+              {user && (
+                <button 
+                  onClick={() => navigate('/create-post')}
+                  className="bg-emerald-500 text-white px-6 py-3 rounded-xl font-medium hover:bg-emerald-600 transition-colors"
+                >
+                  Criar Primeiro Post
+                </button>
+              )}
+            </div>
           </div>
         )}
       </div>
+
+      {/* Bottom Navigation para Mobile */}
+      {user && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden">
+          <div className="grid grid-cols-4 py-2">
+            <button 
+              onClick={() => navigate('/feed')}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <Home size={20} className="text-black" />
+              <span className="text-xs mt-1">Home</span>
+            </button>
+            <button 
+              onClick={() => navigate('/profile')}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <Shirt size={20} className="text-black" />
+              <span className="text-xs mt-1">Meus Itens</span>
+            </button>
+            <button 
+              onClick={() => {}}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <MessageSquare size={20} className="text-black" />
+              <span className="text-xs mt-1">Conversas</span>
+            </button>
+            <button 
+              onClick={() => navigate('/profile')}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <User size={20} className="text-black" />
+              <span className="text-xs mt-1">Perfil</span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

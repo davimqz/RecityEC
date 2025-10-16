@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -33,7 +33,8 @@ const ProtectedRoute = ({ children }) => {
 
 // Componente principal da aplicação
 const AppContent = () => {
-  const { user } = useContext(AuthContext);
+  const { user, login } = useContext(AuthContext);
+  const navigate = useNavigate();
   
   useEffect(() => {
     // Verificar se há token do Google OAuth na URL
@@ -50,11 +51,14 @@ const AppContent = () => {
         
         console.log('✅ Login Google realizado com sucesso');
         
+        // Atualizar contexto de autenticação
+        login(userData);
+        
         // Limpar URL
         window.history.replaceState({}, document.title, window.location.pathname);
         
-        // Recarregar para aplicar login
-        window.location.reload();
+        // Redirecionar para feed após login Google
+        navigate('/feed');
       } catch (err) {
         console.error('❌ Erro ao processar login Google:', err);
       }
@@ -63,7 +67,7 @@ const AppContent = () => {
       alert('Erro no login com Google. Tente novamente.');
       window.history.replaceState({}, document.title, window.location.pathname);
     }
-  }, []);
+  }, [login, navigate]);
 
   return (
     <div className="min-h-screen bg-cream font-inter">
@@ -96,7 +100,7 @@ const AppContent = () => {
         {/* Redirecionamento baseado no status de login */}
         <Route 
           path="/dashboard" 
-          element={user ? <Navigate to="/profile" replace /> : <Navigate to="/" replace />} 
+          element={user ? <Navigate to="/feed" replace /> : <Navigate to="/" replace />} 
         />
         
         {/* Rota 404 */}
