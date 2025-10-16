@@ -19,7 +19,7 @@ const Benefits = () => {
     {
       icon: DollarSign,
       title: 'Econômico',
-      description: 'Encontre ótimos produtos por preços acessíveis e ganhe dinheiro com o que não usa.',
+      description: 'Encontre o que você precisa, adquira com tokens sem gastar dinheiro.',
       color: 'bg-yellow-500'
     }
   ];
@@ -35,7 +35,7 @@ const Benefits = () => {
           className="text-center mb-2 sm:mb-16"
         >
           <h2 className="text-2xl sm:text-3xl lg:text-4xl font-playfair font-semibold text-soft-graphite mb-3 sm:mb-4 px-4">
-            Por que usar o ReUse Market?
+            Por que usar o Giro?
           </h2>
           <p className="text-base sm:text-lg text-soft-graphite/70 max-w-2xl mx-auto px-4">
             Uma plataforma que conecta pessoas e transforma a forma como consumimos

@@ -106,7 +106,9 @@ const AppContent = () => {
         {/* Rota 404 */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      <Footer />
+      
+      {/* Footer só aparece quando usuário NÃO está logado */}
+      {!user && <Footer />}
     </div>
   );
 };

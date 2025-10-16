@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
-import { User, Camera, Heart, MessageCircle, Eye, Plus, Grid, Award, Coins } from 'lucide-react';
+import { User, Camera, Heart, MessageCircle, Eye, Plus, Grid, Award, Coins, Home, Shirt, MessageSquare } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { API_URL } from '../config/api';
+import { useNavigate } from 'react-router-dom';
 
 const UserProfile = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   const [userPosts, setUserPosts] = useState([]);
   const [stats, setStats] = useState({
     totalPosts: 0,
@@ -91,7 +93,7 @@ const UserProfile = () => {
   }
 
   return (
-    <div className="min-h-screen bg-cream py-8">
+    <div className="min-h-screen bg-cream py-8 pb-20 md:pb-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Header do Perfil */}
         <motion.div
@@ -286,6 +288,42 @@ const UserProfile = () => {
             </div>
           </motion.div>
         </motion.div>
+      )}
+
+      {/* Bottom Navigation para Mobile */}
+      {user && (
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 md:hidden">
+          <div className="grid grid-cols-4 py-2">
+            <button 
+              onClick={() => navigate('/feed')}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <Home size={20} className="text-black" />
+              <span className="text-xs mt-1">Home</span>
+            </button>
+            <button 
+              onClick={() => navigate('/profile')}
+              className="flex flex-col items-center py-2 text-emerald-500"
+            >
+              <Shirt size={20} className="text-emerald-500" />
+              <span className="text-xs mt-1">Meus Itens</span>
+            </button>
+            <button 
+              onClick={() => {}}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <MessageSquare size={20} className="text-black" />
+              <span className="text-xs mt-1">Conversas</span>
+            </button>
+            <button 
+              onClick={() => navigate('/profile')}
+              className="flex flex-col items-center py-2 text-black"
+            >
+              <User size={20} className="text-black" />
+              <span className="text-xs mt-1">Perfil</span>
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
