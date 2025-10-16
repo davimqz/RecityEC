@@ -74,6 +74,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   overflow-x: hidden;
+  padding-top: 0;
 }
 
 * {
@@ -83,9 +84,14 @@ body {
 /* Mobile-specific optimizations */
 @media (max-width: 640px) {
   section {
-    scroll-margin-top: 60px;
+    scroll-margin-top: 100px;
     padding-top: 0.5rem !important;
     padding-bottom: 0.5rem !important;
+  }
+  
+  /* First section needs extra space for navbar */
+  section:first-of-type {
+    padding-top: 6rem !important;
   }
   
   .mobile-compact {

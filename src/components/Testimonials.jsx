@@ -50,7 +50,7 @@ const Testimonials = () => {
   }, []);
 
   return (
-    <section className="py-2 sm:py-20 bg-gradient-to-br from-blue-gray/20 to-sage/20">
+    <section className="pt-4 pb-2 sm:py-20 bg-gradient-to-br from-blue-gray/20 to-sage/20">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Recycle, Instagram, Linkedin, Twitter, Mail, Phone, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
-
+import Logo from "../assets/img/giro_logo.png"
 const Footer = () => {
   const footerLinks = {
     'Empresa': [
@@ -44,12 +44,12 @@ const Footer = () => {
               viewport={{ once: true }}
             >
               <div className="flex items-center space-x-2 mb-4 sm:mb-6">
-                <div className="bg-sage rounded-full p-2">
-                  <Recycle className="w-5 h-5 sm:w-6 sm:h-6 text-soft-graphite" />
-                </div>
-                <span className="text-lg sm:text-xl font-playfair font-semibold text-soft-graphite">
-                  ReUse Market
-                </span>
+                <img 
+                  src={Logo} 
+                  alt="Giro Logo" 
+                  className="h-8 sm:h-10 w-auto"
+                />
+                Giro
               </div>
               
               <p className="text-soft-graphite/70 mb-4 sm:mb-6 leading-relaxed max-w-md text-sm sm:text-base">
@@ -60,7 +60,7 @@ const Footer = () => {
               <div className="space-y-2 sm:space-y-3 text-soft-graphite/70 text-sm sm:text-base">
                 <div className="flex items-center space-x-3">
                   <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-sage" />
-                  <span>contato@reusemarket.com.br</span>
+                  <span>contato@giro.com.br</span>
                 </div>
                 <div className="flex items-center space-x-3">
                   <Phone className="w-4 h-4 sm:w-5 sm:h-5 text-sage" />
@@ -142,7 +142,7 @@ const Footer = () => {
               viewport={{ once: true }}
               className="text-soft-graphite/60 text-center sm:text-left text-xs sm:text-sm"
             >
-              © 2025 Powered by Blockchaintech Brazil — Fazendo a economia circular girar 💚
+              © 2025 Powered by Blockchaintech Brazil
             </motion.div>
 
             <motion.div

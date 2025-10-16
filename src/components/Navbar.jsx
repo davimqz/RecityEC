@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Recycle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Logo from "../assets/img/giro_logo.png"
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -23,17 +24,13 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-3 sm:py-4">
           {/* Logo */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="relative">
-              <div className="bg-gradient-to-br from-sage/30 to-terracotta/20 backdrop-blur-sm rounded-full p-2 sm:p-3 border border-white/30">
-                <Recycle className="w-5 h-5 sm:w-6 sm:h-6 text-black animate-gentle-bounce" />
-              </div>
-              {/* Pequenos elementos decorativos */}
-              <div className="absolute -top-1 -right-1 w-1.5 h-1.5 sm:w-2 sm:h-2 bg-sage/60 rounded-full animate-organic-pulse"></div>
-            </div>
-            <span className="text-lg sm:text-xl font-raleway font-semibold text-black tracking-wide">
-              ReUse Market
-            </span>
+          <div className="flex items-center">
+            <img 
+              src={Logo} 
+              alt="Giro Logo" 
+              className="h-8 sm:h-10 w-auto"
+            />
+            Giro
           </div>
 
           {/* Desktop Menu */}
@@ -96,7 +93,7 @@ const Navbar = () => {
                 Contato
               </a>
               <div className="pt-2 border-t border-black/10">
-                <button className="bg-gradient-to-r from-sage to-terracotta text-white px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md">
+                <button className="bg-gradient-to-r from-sage to-terracotta text-black px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md">
                   Entrar
                 </button>
               </div>

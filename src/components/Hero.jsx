@@ -1,10 +1,11 @@
 import React from 'react';
 import { ArrowRight, PlayCircle, Recycle, Heart, Leaf, Package } from 'lucide-react';
 import { motion } from 'framer-motion';
+import Logo from '../assets/img/giro_logo.png';
 
 const Hero = () => {
   return (
-    <section id="inicio" className="relative pt-2 sm:pt-20 pb-2 sm:pb-16 bg-gradient-to-br from-cream via-terracotta/10 to-sage/20 min-h-[50vh] sm:min-h-screen flex items-center overflow-hidden">
+    <section id="inicio" className="relative pt-24 sm:pt-20 pb-2 sm:pb-16 bg-gradient-to-br from-cream via-terracotta/10 to-sage/20 min-h-[50vh] sm:min-h-screen flex items-center overflow-hidden">
       {/* Textura de fundo orgânica */}
       <div className="absolute inset-0 opacity-30"></div>
       
@@ -75,19 +76,15 @@ const Hero = () => {
             className="relative order-1 lg:order-2 flex justify-center lg:block"
           >
             <div className="relative w-64 h-64 sm:w-80 sm:h-80 lg:w-96 lg:h-96 mx-auto lg:mx-0">
-              {/* Blob orgânico principal */}
+              {/* Logo centralizada */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <svg className="w-full h-full animate-organic-pulse" viewBox="0 0 400 400">
-                  <path d="M200 50 C300 80, 350 150, 320 220 C300 280, 240 320, 180 300 C120 280, 80 220, 100 160 C120 100, 160 60, 200 50 Z" 
-                        fill="url(#heroGradient)" opacity="0.3"/>
-                  <defs>
-                    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stopColor="#B7C9A9"/>
-                      <stop offset="50%" stopColor="#E7BFA7"/>
-                      <stop offset="100%" stopColor="#A9C9D3"/>
-                    </linearGradient>
-                  </defs>
-                </svg>
+                <div className="bg-white/90 backdrop-blur-sm rounded-full p-4 sm:p-6 lg:p-8 shadow-xl border border-sage/20">
+                  <img 
+                    src={Logo} 
+                    alt="Giro Logo" 
+                    className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 object-contain"
+                  />
+                </div>
               </div>
               
               {/* Ícones flutuantes com design mais orgânico */}

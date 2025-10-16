@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const CTA = () => {
   return (
-    <section className="py-2 sm:py-20 bg-gradient-to-r from-sage/30 to-terracotta/20 relative overflow-hidden">
+    <section className="pt-4 pb-2 sm:py-20 bg-gradient-to-r from-sage/30 to-terracotta/20 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute top-10 left-10 w-12 sm:w-20 h-12 sm:h-20 bg-white rounded-full"></div>
@@ -66,30 +66,7 @@ const CTA = () => {
             viewport={{ once: true }}
             className="mt-1 sm:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-1 sm:gap-8 text-center px-1"
           >
-            <div>
-              <div className="text-lg sm:text-2xl font-playfair font-bold text-terracotta mb-1 sm:mb-2">
-                ✨ Gratuito
-              </div>
-              <div className="text-soft-graphite/80 text-xs sm:text-sm">
-                Anuncie sem pagar nada
-              </div>
-            </div>
-            <div>
-              <div className="text-lg sm:text-2xl font-playfair font-bold text-terracotta mb-1 sm:mb-2">
-                🚀 Rápido
-              </div>
-              <div className="text-soft-graphite/80 text-xs sm:text-sm">
-                Publique em menos de 2 minutos
-              </div>
-            </div>
-            <div>
-              <div className="text-lg sm:text-2xl font-playfair font-bold text-sage mb-1 sm:mb-2">
-                🌱 Sustentável
-              </div>
-              <div className="text-soft-graphite/80 text-xs sm:text-sm">
-                Faça a diferença no planeta
-              </div>
-            </div>
+            
           </motion.div>
         </motion.div>
       </div>

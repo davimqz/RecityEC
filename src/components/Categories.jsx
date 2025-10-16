@@ -1,5 +1,5 @@
 import React from 'react';
-import { Shirt, Sofa, BookOpen, Smartphone, Baby } from 'lucide-react';
+import { Shirt, Sofa, BookOpen, Smartphone } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const Categories = () => {
@@ -32,17 +32,10 @@ const Categories = () => {
       color: 'bg-purple-100',
       iconColor: 'text-purple-600'
     },
-    {
-      icon: Baby,
-      title: 'Infantis',
-      description: 'Crescendo juntos',
-      color: 'bg-green-100',
-      iconColor: 'text-green-600'
-    }
   ];
 
   return (
-    <section className="py-2 sm:py-16 bg-gradient-to-br from-sage/10 to-terracotta/5">
+    <section className="pt-4 pb-2 sm:py-16 bg-gradient-to-br from-sage/10 to-terracotta/5">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -59,7 +52,7 @@ const Categories = () => {
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-1 sm:gap-6">
           {categories.map((category, index) => (
             <motion.div
               key={index}

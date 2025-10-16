@@ -22,7 +22,7 @@ const HowItWorks = () => {
   ];
 
   return (
-    <section id="como-funciona" className="py-2 sm:py-16 lg:py-20 bg-white">
+    <section id="como-funciona" className="pt-4 pb-2 sm:py-16 lg:py-20 bg-white">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -51,8 +51,8 @@ const HowItWorks = () => {
               className="text-center p-6 sm:p-8 rounded-2xl bg-cream/50 hover:shadow-xl transition-all duration-300 mx-2 sm:mx-0"
             >
               <div className="relative mb-6">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-sage rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                  <step.icon className="w-8 h-8 sm:w-10 sm:h-10 text-white" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-sage/20">
+                  <step.icon className="w-8 h-8 sm:w-10 sm:h-10 text-black" />
                 </div>
                 {index < steps.length - 1 && (
                   <div className="hidden lg:block absolute top-8 sm:top-10 -right-12 w-8 h-0.5 bg-sage/30"></div>
