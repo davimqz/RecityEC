@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useContext, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, MessageCircle, Eye, User, Coins, MoreHorizontal, Award, Plus, Home, Shirt, MessageSquare } from 'lucide-react';
+import { Heart, MessageCircle, Eye, User, Coins, MoreHorizontal, Award, Plus, Home, Shirt, MessageSquare, ShoppingCart } from 'lucide-react';
 import { AuthContext } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config/api';
+import PurchaseModal from './PurchaseModal';
 
 const Feed = () => {
-  const { user } = useContext(AuthContext);
+  const { user, updateUserBalance } = useContext(AuthContext);
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [selectedPost, setSelectedPost] = useState(null);
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
 
   const fetchPosts = useCallback(async (pageNum = 1, reset = false) => {
     try {
@@ -88,6 +91,31 @@ const Feed = () => {
       month: '2-digit',
       year: 'numeric'
     });
+  };
+
+  const handlePurchaseClick = (post) => {
+    if (!user) {
+      alert('Faça login para comprar!');
+      return;
+    }
+    
+    if (post.user?._id === user._id) {
+      alert('Você não pode comprar seu próprio item!');
+      return;
+    }
+    
+    setSelectedPost(post);
+    setShowPurchaseModal(true);
+  };
+
+  const handlePurchaseComplete = (transaction) => {
+    console.log('Compra completada:', transaction);
+    // Atualizar saldo do usuário
+    if (updateUserBalance) {
+      updateUserBalance(user.giroBalance - transaction.amount);
+    }
+    // Opcionalmente, recarregar posts
+    fetchPosts(1, true);
   };
 
   if (loading) {
@@ -175,15 +203,25 @@ const Feed = () => {
                   <span>{formatDate(post.createdAt)}</span>
                 </div>
 
-                {/* Botão de Ação */}
-                <button 
-                  className="w-full bg-emerald-500 text-white py-2 rounded-xl font-medium hover:bg-emerald-600 transition-colors"
-                  onClick={() => {
-                    console.log('Interesse no item:', post.title);
-                  }}
-                >
-                  Quero Trocar!
-                </button>
+                {/* Botões de Ação */}
+                <div className="flex gap-2">
+                  <button 
+                    className="flex-1 bg-emerald-500 text-white py-2 rounded-xl font-medium hover:bg-emerald-600 transition-colors"
+                    onClick={() => {
+                      console.log('Interesse no item:', post.title);
+                    }}
+                  >
+                    Quero Trocar!
+                  </button>
+                  
+                  <button 
+                    className="bg-blue-500 text-white px-4 py-2 rounded-xl font-medium hover:bg-blue-600 transition-colors flex items-center gap-2"
+                    onClick={() => handlePurchaseClick(post)}
+                  >
+                    <ShoppingCart size={16} />
+                    Comprar
+                  </button>
+                </div>
 
                 {/* Stats */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
@@ -288,6 +326,15 @@ const Feed = () => {
           </div>
         </div>
       )}
+
+      {/* Modal de Compra */}
+      <PurchaseModal
+        isOpen={showPurchaseModal}
+        onClose={() => setShowPurchaseModal(false)}
+        post={selectedPost}
+        userBalance={user?.giroBalance || 0}
+        onPurchaseComplete={handlePurchaseComplete}
+      />
     </div>
   );
 };

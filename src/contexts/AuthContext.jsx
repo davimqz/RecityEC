@@ -87,6 +87,12 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
+  const updateUserBalance = (newBalance) => {
+    const updatedUser = { ...user, giroBalance: newBalance };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
   const value = {
     user,
     loading,
@@ -94,6 +100,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     updateUser,
+    updateUserBalance,
   };
 
   return (

@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import UserProfile from './components/UserProfile';
 import Feed from './components/Feed';
 import CreatePost from './components/CreatePost';
+import TransactionHistory from './components/TransactionHistory';
 
 // Componente para página inicial
 const HomePage = () => (
@@ -93,6 +94,14 @@ const AppContent = () => {
           element={
             <ProtectedRoute>
               <CreatePost />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/transactions" 
+          element={
+            <ProtectedRoute>
+              <TransactionHistory />
             </ProtectedRoute>
           } 
         />

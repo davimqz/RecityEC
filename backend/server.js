@@ -16,6 +16,7 @@ const userRoutes = require('./routes/users');
 const walletRoutes = require('./routes/wallet');
 const rewardsRoutes = require('./routes/rewards');
 const postsRoutes = require('./routes/posts');
+const transactionRoutes = require('./routes/transactions');
 
 const app = express();
 
@@ -88,6 +89,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/wallet', walletRoutes);
 app.use('/api/rewards', rewardsRoutes);
 app.use('/api/posts', postsRoutes);
+app.use('/api/transactions', transactionRoutes);
 
 // Servir arquivos estáticos (uploads)
 // Garantir que o diretório de uploads existe
@@ -130,6 +132,53 @@ app.get('/api/debug/uploads', (req, res) => {
       exists: fs.existsSync(uploadsPath),
       files: files,
       totalFiles: files.length
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Debug endpoint para deletar posts (CUIDADO - só para debug!)
+app.delete('/api/debug/posts/:id', async (req, res) => {
+  try {
+    const Post = require('./models/Post');
+    const { id } = req.params;
+    
+    if (id === 'all') {
+      // Deletar TODOS os posts
+      const result = await Post.deleteMany({});
+      res.json({ 
+        message: 'Todos os posts deletados', 
+        deletedCount: result.deletedCount 
+      });
+    } else {
+      // Deletar post específico
+      const result = await Post.findByIdAndDelete(id);
+      if (result) {
+        res.json({ message: 'Post deletado com sucesso', post: result });
+      } else {
+        res.status(404).json({ error: 'Post não encontrado' });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Debug endpoint para listar todos os posts
+app.get('/api/debug/posts', async (req, res) => {
+  try {
+    const Post = require('./models/Post');
+    const posts = await Post.find({}).populate('author', 'name email');
+    res.json({
+      totalPosts: posts.length,
+      posts: posts.map(post => ({
+        id: post._id,
+        title: post.title,
+        author: post.author?.name || 'Unknown',
+        createdAt: post.createdAt,
+        giroValue: post.giroValue
+      }))
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
