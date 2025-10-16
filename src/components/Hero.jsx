@@ -54,14 +54,7 @@ const Hero = () => {
                 <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full hover:translate-x-full transition-transform duration-700"></div>
               </motion.button>
               
-              <motion.button
-                whileHover={{ scale: 1.05, rotate: -1 }}
-                whileTap={{ scale: 0.95 }}
-                className="border-2 border-soft-graphite/30 text-soft-graphite px-4 sm:px-8 py-2 sm:py-4 rounded-full font-raleway font-semibold text-sm sm:text-lg hover:bg-soft-graphite hover:text-white transition-all duration-300 flex items-center justify-center gap-2 backdrop-blur-sm bg-white/50 w-full sm:w-auto"
-              >
-                <PlayCircle className="w-4 h-4 sm:w-5 sm:h-5" />
-                Saiba Mais
-              </motion.button>
+              
             </div>
 
             {/* Micro elementos decorativos */}
