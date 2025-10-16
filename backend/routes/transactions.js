@@ -6,24 +6,67 @@ const User = require('../models/User');
 const Post = require('../models/Post');
 const blockchainService = require('../services/BlockchainService');
 
+// Debug endpoint para verificar post e usuário
+router.get('/debug/:postId', authMiddleware, async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const currentUser = req.user;
+    
+    const post = await Post.findById(postId).populate('author');
+    
+    res.json({
+      post: {
+        id: post._id,
+        author: post.author,
+        authorId: post.author._id.toString()
+      },
+      currentUser: {
+        id: currentUser.id,
+        _id: currentUser._id
+      },
+      canPurchase: post.author._id.toString() !== currentUser.id
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // Processar compra
 router.post('/purchase', authMiddleware, async (req, res) => {
   try {
     const { postId, amount } = req.body;
     const buyerId = req.user.id;
+    
+    console.log('🛒 Tentativa de compra no backend:', {
+      postId,
+      buyerId,
+      userFromToken: req.user
+    });
 
     // Verificar se o post existe
-    const post = await Post.findById(postId).populate('user');
+    const post = await Post.findById(postId).populate('author');
     if (!post) {
       return res.status(404).json({ message: 'Item não encontrado' });
     }
 
+    // DEBUG: Verificar dados completos
+    console.log('🔍 DEBUG Backend - Dados completos:', {
+      post: post,
+      postAuthor: post.author,
+      postAuthorId: post.author._id.toString(),
+      buyerId: buyerId,
+      areEqual: post.author._id.toString() === buyerId
+    });
+
     // Verificar se não está comprando próprio item
-    if (post.user._id.toString() === buyerId) {
+    if (post.author._id.toString() === buyerId) {
+      console.log('❌ BACKEND: Bloqueado - mesmo usuário');
       return res.status(400).json({ message: 'Você não pode comprar seu próprio item' });
     }
 
-    const sellerId = post.user._id.toString();
+    console.log('✅ BACKEND: Compra permitida - usuários diferentes');
+
+    const sellerId = post.author._id.toString();
 
     // Processar compra através do blockchain service
     const transaction = await blockchainService.processPurchase(

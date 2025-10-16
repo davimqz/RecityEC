@@ -298,4 +298,101 @@ function getActionDescription(actionType) {
   return descriptions[actionType] || 'Recompensa GIRO';
 }
 
+// === NOVAS ROTAS DE RECOMPENSA SIMPLES ===
+
+// Recompensa por login diário
+router.post('/daily-login', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    
+    // Verificar se já recebeu hoje
+    const today = new Date().toDateString();
+    const lastLogin = user.lastDailyReward ? new Date(user.lastDailyReward).toDateString() : null;
+    
+    if (lastLogin === today) {
+      return res.status(400).json({ 
+        message: 'Você já recebeu sua recompensa diária hoje!' 
+      });
+    }
+    
+    const rewardAmount = 100; // 100 GIRO por dia
+    
+    // Atualizar saldo
+    user.giroBalance += rewardAmount;
+    user.lastDailyReward = new Date();
+    await user.save();
+    
+    res.json({
+      message: `Parabéns! Você recebeu ${rewardAmount} GIRO tokens!`,
+      reward: rewardAmount,
+      newBalance: user.giroBalance
+    });
+    
+  } catch (error) {
+    console.error('Erro na recompensa diária:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+// Saldo inicial para novos usuários
+router.post('/welcome-bonus', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId);
+    
+    // Verificar se já recebeu bônus
+    if (user.receivedWelcomeBonus) {
+      return res.status(400).json({ 
+        message: 'Você já recebeu seu bônus de boas-vindas!' 
+      });
+    }
+    
+    const bonusAmount = 1000; // 1000 GIRO de bônus inicial
+    
+    user.giroBalance += bonusAmount;
+    user.receivedWelcomeBonus = true;
+    await user.save();
+    
+    res.json({
+      message: `Bem-vindo! Você recebeu ${bonusAmount} GIRO tokens!`,
+      reward: bonusAmount,
+      newBalance: user.giroBalance
+    });
+    
+  } catch (error) {
+    console.error('Erro no bônus de boas-vindas:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
+// Admin: Adicionar tokens para qualquer usuário
+router.post('/add-tokens', authMiddleware, async (req, res) => {
+  try {
+    const { targetUserId, amount, reason } = req.body;
+    
+    // Se não especificar usuário, adicionar para o próprio usuário logado
+    const userId = targetUserId || req.user.id;
+    const tokenAmount = amount || 500;
+    
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Usuário não encontrado' });
+    }
+    
+    user.giroBalance += tokenAmount;
+    await user.save();
+    
+    res.json({
+      message: `${tokenAmount} GIRO tokens adicionados!`,
+      newBalance: user.giroBalance,
+      reason: reason || 'Tokens adicionados'
+    });
+    
+  } catch (error) {
+    console.error('Erro ao adicionar tokens:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
 module.exports = router;

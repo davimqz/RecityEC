@@ -102,6 +102,17 @@ const userSchema = new mongoose.Schema({
   lastBlockchainSync: {
     type: Date,
     default: Date.now
+  },
+  
+  // Campos para sistema de recompensas
+  receivedWelcomeBonus: {
+    type: Boolean,
+    default: false
+  },
+  
+  lastDailyReward: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true,

@@ -13,6 +13,7 @@ import UserProfile from './components/UserProfile';
 import Feed from './components/Feed';
 import CreatePost from './components/CreatePost';
 import TransactionHistory from './components/TransactionHistory';
+import RewardsPanel from './components/RewardsPanel';
 
 // Componente para página inicial
 const HomePage = () => (
@@ -102,6 +103,14 @@ const AppContent = () => {
           element={
             <ProtectedRoute>
               <TransactionHistory />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/rewards" 
+          element={
+            <ProtectedRoute>
+              <RewardsPanel />
             </ProtectedRoute>
           } 
         />

@@ -7,7 +7,7 @@ import { API_URL } from '../config/api';
 import PurchaseModal from './PurchaseModal';
 
 const Feed = () => {
-  const { user, updateUserBalance } = useContext(AuthContext);
+  const { user, updateUserBalance, fetchUserBalance } = useContext(AuthContext);
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -44,7 +44,11 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPosts();
-  }, [fetchPosts]);
+    // Buscar saldo atualizado quando carregar o feed
+    if (user && fetchUserBalance) {
+      fetchUserBalance();
+    }
+  }, [fetchPosts, user, fetchUserBalance]);
 
   const handleLike = async (postId) => {
     if (!user) return;
@@ -99,11 +103,29 @@ const Feed = () => {
       return;
     }
     
-    if (post.user?._id === user._id) {
+    // DEBUG: Vamos ver os dados completos
+    console.log('🔍 DEBUG - Dados completos:', {
+      post: post,
+      postAuthor: post.author,
+      currentUser: user,
+      postAuthorId: post.author?._id,
+      currentUserId: user._id,
+      postAuthorIdString: post.author?._id?.toString(),
+      currentUserIdString: user._id?.toString(),
+      areEqual: post.author?._id?.toString() === user._id?.toString()
+    });
+    
+    // Verificar se não está comprando do próprio item
+    const postAuthorId = post.author?._id?.toString() || post.author?.id?.toString();
+    const currentUserId = user._id?.toString() || user.id?.toString();
+    
+    if (postAuthorId === currentUserId) {
       alert('Você não pode comprar seu próprio item!');
+      console.log('❌ Bloqueado: mesmo usuário');
       return;
     }
     
+    console.log('✅ Compra permitida - usuários diferentes');
     setSelectedPost(post);
     setShowPurchaseModal(true);
   };
@@ -142,9 +164,13 @@ const Feed = () => {
                 </div>
               </div>
               <div className="flex items-center gap-4">
-                <div className="bg-purple-500 text-white px-4 py-2 rounded-full font-medium">
-                  {user.giroBalance || 2500} TKN
-                </div>
+                <button
+                  onClick={() => navigate('/rewards')}
+                  className="bg-purple-500 text-white px-4 py-2 rounded-full font-medium hover:bg-purple-600 transition-colors flex items-center gap-2"
+                >
+                  <Coins size={16} />
+                  {user.giroBalance || 0} GIRO
+                </button>
                 <button 
                   onClick={() => navigate('/create-post')}
                   className="bg-orange-500 text-white w-12 h-12 rounded-full flex items-center justify-center hover:bg-orange-600 transition-colors"

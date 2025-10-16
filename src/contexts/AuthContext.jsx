@@ -93,6 +93,26 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
+  const fetchUserBalance = async () => {
+    if (!user) return;
+    
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`${API_URL}/api/users/profile`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const userData = await response.json();
+        updateUser({ giroBalance: userData.giroBalance });
+      }
+    } catch (error) {
+      console.error('Erro ao buscar saldo:', error);
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -101,6 +121,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     updateUserBalance,
+    fetchUserBalance,
   };
 
   return (

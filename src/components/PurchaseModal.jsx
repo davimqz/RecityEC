@@ -85,7 +85,7 @@ const PurchaseModal = ({
               />
               <div>
                 <p className="font-medium text-gray-800">{post.content}</p>
-                <p className="text-sm text-gray-500">Por: {post.user?.name}</p>
+                <p className="text-sm text-gray-500">Por: {post.author?.name}</p>
               </div>
             </div>
 
