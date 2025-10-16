@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Recycle } from 'lucide-react';
+import { Menu, X, Recycle, User, LogOut, Wallet, Plus, Grid, Home } from 'lucide-react';
 import { motion } from 'framer-motion';
-import Logo from "../assets/img/giro_logo.png"
+import { Link, useLocation } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
+import LoginModal from './Auth/LoginModal';
+import Logo from "../assets/img/giro_logo.png";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const { user, isAuthenticated, logout } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,35 +31,116 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-3 sm:py-4">
           {/* Logo */}
-          <div className="flex items-center">
+          <Link to="/" className="flex items-center">
             <img 
               src={Logo} 
               alt="Giro Logo" 
               className="h-8 sm:h-10 w-auto"
             />
             Giro
-          </div>
+          </Link>
 
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            <a href="#inicio" className="text-black hover:text-sage transition-colors font-medium text-sm xl:text-base">
+            <Link 
+              to="/" 
+              className={`flex items-center gap-2 transition-colors font-medium text-sm xl:text-base ${
+                location.pathname === '/' ? 'text-sage' : 'text-black hover:text-sage'
+              }`}
+            >
+              <Home size={16} />
               Início
-            </a>
-            <a href="#como-funciona" className="text-black hover:text-sage transition-colors font-medium text-sm xl:text-base">
-              Como Funciona
-            </a>
-            <a href="#anunciar" className="text-black hover:text-sage transition-colors font-medium text-sm xl:text-base">
-              Anunciar
-            </a>
+            </Link>
+            <Link 
+              to="/feed" 
+              className={`flex items-center gap-2 transition-colors font-medium text-sm xl:text-base ${
+                location.pathname === '/feed' ? 'text-sage' : 'text-black hover:text-sage'
+              }`}
+            >
+              <Grid size={16} />
+              Feed
+            </Link>
+            {isAuthenticated && (
+              <>
+                <Link 
+                  to="/profile" 
+                  className={`flex items-center gap-2 transition-colors font-medium text-sm xl:text-base ${
+                    location.pathname === '/profile' ? 'text-sage' : 'text-black hover:text-sage'
+                  }`}
+                >
+                  <User size={16} />
+                  Perfil
+                </Link>
+                <Link 
+                  to="/create-post" 
+                  className="flex items-center gap-2 bg-sage text-white px-4 py-2 rounded-xl hover:bg-sage/80 transition-colors font-medium text-sm xl:text-base"
+                >
+                  <Plus size={16} />
+                  Criar Post
+                </Link>
+              </>
+            )}
             <a href="#explorar" className="text-black hover:text-sage transition-colors font-medium text-sm xl:text-base">
               Explorar
             </a>
             <a href="#contato" className="text-black hover:text-sage transition-colors font-medium text-sm xl:text-base">
               Contato
             </a>
-            <button className="bg-gradient-to-r from-white to-cream text-soft-graphite px-4 xl:px-6 py-2 rounded-full hover:from-cream hover:to-terracotta hover:text-white transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 text-sm xl:text-base">
-              Entrar
-            </button>
+            
+            {/* Auth Section */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
+                  className="flex items-center space-x-2 bg-gradient-to-r from-white to-cream text-soft-graphite px-4 xl:px-6 py-2 rounded-full hover:from-cream hover:to-terracotta hover:text-white transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 text-sm xl:text-base"
+                >
+                  <User size={16} />
+                  <span>{user?.name || user?.email}</span>
+                  {user?.giro_balance && (
+                    <span className="bg-sage text-white px-2 py-1 rounded-full text-xs">
+                      {user.giro_balance} GIRO
+                    </span>
+                  )}
+                </button>
+                
+                {/* User Dropdown */}
+                {isUserMenuOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
+                  >
+                    <Link to="/profile" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      <User size={16} className="mr-2" />
+                      Meu Perfil
+                    </Link>
+                    <Link to="/create-post" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      <Plus size={16} className="mr-2" />
+                      Criar Post
+                    </Link>
+                    <Link to="/feed" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      <Grid size={16} className="mr-2" />
+                      Feed
+                    </Link>
+                    <hr className="my-1" />
+                    <button
+                      onClick={logout}
+                      className="flex items-center w-full px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    >
+                      <LogOut size={16} className="mr-2" />
+                      Sair
+                    </button>
+                  </motion.div>
+                )}
+              </div>
+            ) : (
+              <button 
+                onClick={() => setIsLoginModalOpen(true)}
+                className="bg-gradient-to-r from-white to-cream text-soft-graphite px-4 xl:px-6 py-2 rounded-full hover:from-cream hover:to-terracotta hover:text-white transition-all duration-300 font-medium shadow-lg hover:shadow-xl transform hover:scale-105 text-sm xl:text-base"
+              >
+                Entrar
+              </button>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -93,13 +181,48 @@ const Navbar = () => {
                 Contato
               </a>
               <div className="pt-2 border-t border-black/10">
-                <button className="bg-gradient-to-r from-sage to-terracotta text-black px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md">
-                  Entrar
-                </button>
+                {isAuthenticated ? (
+                  <div className="space-y-2">
+                    <div className="text-center text-sm text-gray-600">
+                      Olá, {user?.name || user?.email}
+                      {user?.giro_balance && (
+                        <div className="text-sage font-semibold">
+                          {user.giro_balance} GIRO
+                        </div>
+                      )}
+                    </div>
+                    <button className="bg-gradient-to-r from-sage to-terracotta text-white px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md">
+                      Minha Carteira
+                    </button>
+                    <button 
+                      onClick={logout}
+                      className="border border-gray-300 text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-colors font-medium w-full"
+                    >
+                      Sair
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setIsLoginModalOpen(true)}
+                    className="bg-gradient-to-r from-sage to-terracotta text-black px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md"
+                  >
+                    Entrar
+                  </button>
+                )}
               </div>
             </div>
           </motion.div>
         )}
+        
+        {/* Login Modal */}
+        <LoginModal 
+          isOpen={isLoginModalOpen}
+          onClose={() => setIsLoginModalOpen(false)}
+          onLogin={(userData) => {
+            // O contexto já gerencia o estado do usuário
+            setIsUserMenuOpen(false);
+          }}
+        />
       </div>
     </motion.nav>
   );

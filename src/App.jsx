@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, AuthContext } from './contexts/AuthContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import HowItWorks from './components/HowItWorks';
@@ -7,19 +9,111 @@ import Benefits from './components/Benefits';
 import Testimonials from './components/Testimonials';
 import CTA from './components/CTA';
 import Footer from './components/Footer';
+import UserProfile from './components/UserProfile';
+import Feed from './components/Feed';
+import CreatePost from './components/CreatePost';
 
-function App() {
+// Componente para página inicial
+const HomePage = () => (
+  <>
+    <Hero />
+    <HowItWorks />
+    <Categories />
+    <Benefits />
+    <Testimonials />
+    <CTA />
+  </>
+);
+
+// Componente para rotas protegidas
+const ProtectedRoute = ({ children }) => {
+  const { user } = useContext(AuthContext);
+  return user ? children : <Navigate to="/" replace />;
+};
+
+// Componente principal da aplicação
+const AppContent = () => {
+  const { user } = useContext(AuthContext);
+  
+  useEffect(() => {
+    // Verificar se há token do Google OAuth na URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+    const userParam = urlParams.get('user');
+    const error = urlParams.get('error');
+
+    if (token && userParam) {
+      try {
+        const userData = JSON.parse(decodeURIComponent(userParam));
+        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(userData));
+        
+        console.log('✅ Login Google realizado com sucesso');
+        
+        // Limpar URL
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // Recarregar para aplicar login
+        window.location.reload();
+      } catch (err) {
+        console.error('❌ Erro ao processar login Google:', err);
+      }
+    } else if (error) {
+      console.error('❌ Erro no login Google:', error);
+      alert('Erro no login com Google. Tente novamente.');
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
+  }, []);
+
   return (
     <div className="min-h-screen bg-cream font-inter">
       <Navbar />
-      <Hero />
-      <HowItWorks />
-      <Categories />
-      <Benefits />
-      <Testimonials />
-      <CTA />
+      <Routes>
+        {/* Página inicial */}
+        <Route path="/" element={<HomePage />} />
+        
+        {/* Feed público */}
+        <Route path="/feed" element={<Feed />} />
+        
+        {/* Rotas protegidas */}
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <UserProfile />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/create-post" 
+          element={
+            <ProtectedRoute>
+              <CreatePost />
+            </ProtectedRoute>
+          } 
+        />
+        
+        {/* Redirecionamento baseado no status de login */}
+        <Route 
+          path="/dashboard" 
+          element={user ? <Navigate to="/profile" replace /> : <Navigate to="/" replace />} 
+        />
+        
+        {/* Rota 404 */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
       <Footer />
     </div>
+  );
+};
+
+function App() {
+  return (
+    <Router>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </Router>
   );
 }
 
