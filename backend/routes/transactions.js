@@ -96,6 +96,27 @@ router.post('/purchase', authMiddleware, async (req, res) => {
   }
 });
 
+// Listar apenas compras do usuário (como comprador)
+router.get('/my-purchases', authMiddleware, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const purchases = await Transaction.find({
+      from: userId, // Usuário como comprador
+      type: 'purchase'
+    })
+    .populate('from', 'name email')
+    .populate('to', 'name email') 
+    .populate('post', 'content imageUrl')
+    .sort({ createdAt: -1 });
+
+    res.json(purchases);
+  } catch (error) {
+    console.error('Erro ao buscar compras:', error);
+    res.status(500).json({ message: 'Erro interno do servidor' });
+  }
+});
+
 // Listar transações do usuário
 router.get('/my-transactions', authMiddleware, async (req, res) => {
   try {

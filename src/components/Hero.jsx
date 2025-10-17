@@ -5,7 +5,7 @@ import Logo from '../assets/img/giro_logo.png';
 
 const Hero = () => {
   return (
-    <section id="inicio" className="relative pt-24 sm:pt-20 pb-2 sm:pb-16 bg-gradient-to-br from-cream via-terracotta/10 to-sage/20 min-h-[50vh] sm:min-h-screen flex items-center overflow-hidden">
+    <section id="inicio" className="relative pt-32 sm:pt-28 pb-2 sm:pb-16 bg-gradient-to-br from-cream via-terracotta/10 to-sage/20 min-h-[50vh] sm:min-h-screen flex items-center overflow-hidden">
       {/* Textura de fundo orgânica */}
       <div className="absolute inset-0 opacity-30"></div>
       

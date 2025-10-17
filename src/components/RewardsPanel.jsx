@@ -7,6 +7,27 @@ import { API_URL } from '../config/api';
 const RewardsPanel = () => {
   const { user, fetchUserBalance } = useContext(AuthContext);
   const [loading, setLoading] = useState({});
+
+  // Debug: Ver se o componente está carregando
+  console.log('🎁 RewardsPanel carregou', { user });
+
+  // Se não estiver logado, mostrar mensagem
+  if (!user) {
+    return (
+      <div className="max-w-4xl mx-auto p-6">
+        <div className="bg-white rounded-2xl shadow-lg p-6 text-center">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Centro de Recompensas</h2>
+          <p className="text-gray-600 mb-6">Faça login para ganhar GIRO tokens gratuitamente!</p>
+          <button 
+            onClick={() => window.location.href = '/'}
+            className="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600"
+          >
+            Fazer Login
+          </button>
+        </div>
+      </div>
+    );
+  }
   
   const claimReward = async (endpoint, buttonId) => {
     setLoading({ ...loading, [buttonId]: true });
@@ -25,7 +46,14 @@ const RewardsPanel = () => {
       
       if (response.ok) {
         alert(`🎉 ${result.message}\n💰 Novo saldo: ${result.newBalance} GIRO`);
-        fetchUserBalance(); // Atualizar saldo na tela
+        
+        // Atualizar o saldo no contexto do usuário
+        if (fetchUserBalance) {
+          fetchUserBalance();
+        }
+        
+        // Forçar recarregamento da página para sincronizar
+        window.location.reload();
       } else {
         alert(`❌ ${result.message}`);
       }
@@ -58,7 +86,14 @@ const RewardsPanel = () => {
       
       if (response.ok) {
         alert(`🎉 ${result.message}\n💰 Novo saldo: ${result.newBalance} GIRO`);
-        fetchUserBalance();
+        
+        // Atualizar o saldo no contexto do usuário
+        if (fetchUserBalance) {
+          fetchUserBalance();
+        }
+        
+        // Forçar recarregamento da página para sincronizar
+        window.location.reload();
       } else {
         alert(`❌ ${result.message}`);
       }

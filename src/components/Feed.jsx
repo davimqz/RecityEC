@@ -44,11 +44,14 @@ const Feed = () => {
 
   useEffect(() => {
     fetchPosts();
-    // Buscar saldo atualizado quando carregar o feed
+  }, [fetchPosts]);
+
+  // Effect separado para buscar saldo (só uma vez quando user mudar)
+  useEffect(() => {
     if (user && fetchUserBalance) {
       fetchUserBalance();
     }
-  }, [fetchPosts, user, fetchUserBalance]);
+  }, [user?._id]); // Só roda quando o user ID mudar
 
   const handleLike = async (postId) => {
     if (!user) return;
@@ -132,12 +135,17 @@ const Feed = () => {
 
   const handlePurchaseComplete = (transaction) => {
     console.log('Compra completada:', transaction);
+    
     // Atualizar saldo do usuário
     if (updateUserBalance) {
       updateUserBalance(user.giroBalance - transaction.amount);
     }
-    // Opcionalmente, recarregar posts
-    fetchPosts(1, true);
+    
+    // Remover o post comprado do feed
+    setPosts(prevPosts => prevPosts.filter(post => post._id !== transaction.post));
+    
+    // Mostrar mensagem de sucesso
+    alert(`🎉 Compra realizada com sucesso!\n💰 ${transaction.amount} GIRO descontados\n📦 Item removido do feed`);
   };
 
   if (loading) {
@@ -202,13 +210,24 @@ const Feed = () => {
                     alt={post.title}
                     className="w-full h-full object-cover"
                     onError={(e) => {
-                      console.log('Erro ao carregar imagem:', e.target.src);
-                      e.target.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" fill="%23f0f0f0"/><text x="50%" y="50%" text-anchor="middle" dy="0.3em" fill="%23999">Erro</text></svg>';
+                      // Remover logs para evitar spam
+                      // Usar placeholder mais elegante
+                      e.target.src = `data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400">
+                        <rect width="400" height="400" fill="%23f8f9fa"/>
+                        <circle cx="200" cy="150" r="30" fill="%23dee2e6"/>
+                        <rect x="150" y="200" width="100" height="80" rx="8" fill="%23dee2e6"/>
+                        <text x="200" y="320" text-anchor="middle" fill="%236c757d" font-family="Arial" font-size="14">Imagem Indisponível</text>
+                      </svg>`;
+                      // Para o log infinito
+                      e.target.onerror = null;
                     }}
                   />
                 ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400">Sem imagem</span>
+                  <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex flex-col items-center justify-center">
+                    <div className="w-16 h-16 bg-gray-300 rounded-full flex items-center justify-center mb-2">
+                      📷
+                    </div>
+                    <span className="text-gray-500 text-sm">Sem imagem</span>
                   </div>
                 )}
                 
@@ -336,11 +355,11 @@ const Feed = () => {
               <span className="text-xs mt-1">Meus Itens</span>
             </button>
             <button 
-              onClick={() => {}}
+              onClick={() => navigate('/my-purchases')}
               className="flex flex-col items-center py-2 text-black"
             >
-              <MessageSquare size={20} className="text-black" />
-              <span className="text-xs mt-1">Conversas</span>
+              <ShoppingCart size={20} className="text-black" />
+              <span className="text-xs mt-1">Compras</span>
             </button>
             <button 
               onClick={() => navigate('/profile')}

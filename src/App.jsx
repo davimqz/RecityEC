@@ -14,10 +14,13 @@ import Feed from './components/Feed';
 import CreatePost from './components/CreatePost';
 import TransactionHistory from './components/TransactionHistory';
 import RewardsPanel from './components/RewardsPanel';
+import MyPurchases from './components/MyPurchases';
+import LoggedInUserBar from './components/LoggedInUserBar';
 
 // Componente para página inicial
 const HomePage = () => (
   <>
+    <LoggedInUserBar />
     <Hero />
     <HowItWorks />
     <Categories />
@@ -108,9 +111,13 @@ const AppContent = () => {
         />
         <Route 
           path="/rewards" 
+          element={<RewardsPanel />} 
+        />
+        <Route 
+          path="/my-purchases" 
           element={
             <ProtectedRoute>
-              <RewardsPanel />
+              <MyPurchases />
             </ProtectedRoute>
           } 
         />

@@ -78,6 +78,17 @@ class BlockchainService {
    */
   async processPurchase(buyerId, sellerId, postId, amount) {
     try {
+      console.log('💰 DEBUG - processPurchase chamado:', {
+        buyerId, sellerId, postId, amount, amountType: typeof amount
+      });
+
+      // Garantir que amount é um número
+      const purchaseAmount = Number(amount);
+      
+      if (purchaseAmount <= 0) {
+        throw new Error('Valor da compra deve ser maior que zero');
+      }
+
       // Buscar usuários
       const buyer = await User.findById(buyerId);
       const seller = await User.findById(sellerId);
@@ -87,7 +98,7 @@ class BlockchainService {
       }
 
       // Verificar saldo do comprador
-      if (buyer.giroBalance < amount) {
+      if (buyer.giroBalance < purchaseAmount) {
         throw new Error('Saldo insuficiente');
       }
 
@@ -96,9 +107,9 @@ class BlockchainService {
         from: buyerId,
         to: sellerId,
         post: postId,
-        amount: amount,
+        amount: purchaseAmount,
         type: 'purchase',
-        description: `Compra de item por ${amount} GIRO`
+        description: `Compra de item por ${purchaseAmount} GIRO`
       });
 
       await transaction.save();
@@ -108,8 +119,8 @@ class BlockchainService {
       const mockTxHash = this.generateMockTxHash();
       
       // Atualizar saldos no banco
-      buyer.giroBalance -= amount;
-      seller.giroBalance += amount;
+      buyer.giroBalance -= purchaseAmount;
+      seller.giroBalance += purchaseAmount;
       
       await buyer.save();
       await seller.save();
@@ -122,7 +133,7 @@ class BlockchainService {
       
       await transaction.save();
       
-      console.log(`✅ Compra processada: ${amount} GIRO transferidos`);
+      console.log(`✅ Compra processada: ${purchaseAmount} GIRO transferidos`);
       console.log(`🔗 TX Hash: ${mockTxHash}`);
       
       return transaction;
@@ -137,8 +148,13 @@ class BlockchainService {
    * Gerar hash de transação simulada (para demo)
    */
   generateMockTxHash() {
-    const randomBytes = Math.random().toString(36).substring(2, 15);
-    return `0x${randomBytes.padStart(64, '0')}`;
+    // Gerar 64 caracteres hexadecimais aleatórios (hash blockchain real)
+    const chars = '0123456789abcdef';
+    let hash = '0x';
+    for (let i = 0; i < 64; i++) {
+      hash += chars[Math.floor(Math.random() * chars.length)];
+    }
+    return hash;
   }
 
   /**

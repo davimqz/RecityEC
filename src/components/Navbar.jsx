@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Menu, X, Recycle, User, LogOut, Wallet, Plus, Grid, Home } from 'lucide-react';
+import { Menu, X, Recycle, User, LogOut, Wallet, Plus, Grid, Home, ShoppingBag } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -115,6 +115,14 @@ const Navbar = () => {
                       <User size={16} className="mr-2" />
                       Meu Perfil
                     </Link>
+                    <Link to="/my-purchases" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      <ShoppingBag size={16} className="mr-2" />
+                      Minhas Compras
+                    </Link>
+                    <Link to="/rewards" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
+                      <Wallet size={16} className="mr-2" />
+                      Ganhar GIRO
+                    </Link>
                     <Link to="/create-post" className="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-100">
                       <Plus size={16} className="mr-2" />
                       Criar Post
@@ -166,51 +174,84 @@ const Navbar = () => {
             className="lg:hidden bg-white/95 backdrop-blur-md rounded-lg mt-2 mx-2 sm:mx-0 p-4 shadow-lg border border-white/50"
           >
             <div className="flex flex-col space-y-3">
-              <a href="#inicio" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
-                Início
-              </a>
-              <a href="#como-funciona" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
-                Como Funciona
-              </a>
-              <a href="#anunciar" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
-                Anunciar
-              </a>
-              <a href="#explorar" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
-                Explorar
-              </a>
-              <a href="#contato" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
-                Contato
-              </a>
-              <div className="pt-2 border-t border-black/10">
-                {isAuthenticated ? (
-                  <div className="space-y-2">
-                    <div className="text-center text-sm text-gray-600">
-                      Olá, {user?.name || user?.email}
-                      {user?.giro_balance && (
-                        <div className="text-sage font-semibold">
-                          {user.giro_balance} GIRO
-                        </div>
-                      )}
-                    </div>
-                    <button className="bg-gradient-to-r from-sage to-terracotta text-white px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md">
-                      Minha Carteira
-                    </button>
+              {isAuthenticated ? (
+                <>
+                  {/* Menu para usuários logados */}
+                  <div className="text-center text-sm text-gray-600 pb-2 border-b border-gray-200">
+                    Olá, {user?.name || user?.email}
+                    {user?.giroBalance !== undefined && (
+                      <div className="text-sage font-semibold">
+                        {user.giroBalance} GIRO
+                      </div>
+                    )}
+                  </div>
+                  
+                  <Link to="/feed" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10">
+                    <Grid size={18} className="mr-3" />
+                    Feed
+                  </Link>
+                  
+                  <Link to="/my-purchases" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10">
+                    <ShoppingBag size={18} className="mr-3" />
+                    Minhas Compras
+                  </Link>
+                  
+                  <Link to="/rewards" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10">
+                    <Wallet size={18} className="mr-3" />
+                    Ganhar GIRO
+                  </Link>
+                  
+                  <Link to="/create-post" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10">
+                    <Plus size={18} className="mr-3" />
+                    Criar Post
+                  </Link>
+                  
+                  <Link to="/profile" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10">
+                    <User size={18} className="mr-3" />
+                    Meu Perfil
+                  </Link>
+                  
+                  <div className="pt-2 border-t border-gray-200">
                     <button 
-                      onClick={logout}
-                      className="border border-gray-300 text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-colors font-medium w-full"
+                      onClick={() => {
+                        logout();
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="flex items-center justify-center border border-gray-300 text-gray-700 px-6 py-3 rounded-full hover:bg-gray-50 transition-colors font-medium w-full"
                     >
+                      <LogOut size={16} className="mr-2" />
                       Sair
                     </button>
                   </div>
-                ) : (
-                  <button 
-                    onClick={() => setIsLoginModalOpen(true)}
-                    className="bg-gradient-to-r from-sage to-terracotta text-black px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md"
-                  >
-                    Entrar
-                  </button>
-                )}
-              </div>
+                </>
+              ) : (
+                <>
+                  {/* Menu para visitantes */}
+                  <a href="#inicio" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
+                    Início
+                  </a>
+                  <a href="#como-funciona" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
+                    Como Funciona
+                  </a>
+                  <a href="#anunciar" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
+                    Anunciar
+                  </a>
+                  <a href="#explorar" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
+                    Explorar
+                  </a>
+                  <a href="#contato" className="text-black hover:text-sage transition-colors font-medium py-3 px-4 rounded-lg hover:bg-sage/10 text-center">
+                    Contato
+                  </a>
+                  <div className="pt-2 border-t border-black/10">
+                    <button 
+                      onClick={() => setIsLoginModalOpen(true)}
+                      className="bg-gradient-to-r from-sage to-terracotta text-white px-6 py-3 rounded-full hover:from-sage/90 hover:to-terracotta/90 transition-colors font-medium w-full shadow-md"
+                    >
+                      Entrar
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
           </motion.div>
         )}
